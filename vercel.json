@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/create-session",
+      "destination": "/api/index"
+    }
+  ]
+}

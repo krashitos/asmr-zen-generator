@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => next.classList.add('active'), 50);
     };
 
-    // --- API Calls ---
+    // --- API and Fallback ---
     const startSession = async (theme) => {
         loadingOverlay.classList.remove('hidden');
         
@@ -46,11 +46,25 @@ document.addEventListener('DOMContentLoaded', () => {
             setupPlayer(data);
             showPage('playerPage');
         } catch (err) {
-            console.error(err);
-            alert('The Zen connection was interrupted. Using fallback...');
+            console.warn('API Failed, using Local Fallback Session Generator');
+            const fallbackData = generateLocalFallback(theme);
+            setupPlayer(fallbackData);
+            showPage('playerPage');
         } finally {
             loadingOverlay.classList.add('hidden');
         }
+    };
+
+    const generateLocalFallback = (theme) => {
+        return {
+            "title": `Peaceful ${theme}`,
+            "script": `Let the digital world fade away. Focus on the gentle presence of ${theme}. Breathe deeply and find your center.`,
+            "layers": [
+                { "name": "Soft Rain", "url": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Rain_on_the_roof.mp3", "initialVolume": 0.4 },
+                { "name": "Nature Wind", "url": "https://upload.wikimedia.org/wikipedia/commons/b/b0/Forest_ambience_with_birds.mp3", "initialVolume": 0.2 }
+            ],
+            "colors": { "primary": "#1a1a2e", "secondary": "#16213e" }
+        };
     };
 
     // --- Player Logic ---
@@ -62,12 +76,12 @@ document.addEventListener('DOMContentLoaded', () => {
         stopAll();
         audioElements = [];
 
-        // Update background
         dynamicBg.style.background = `radial-gradient(circle at 20% 30%, ${session.colors.primary} 0%, transparent 40%),
                                       radial-gradient(circle at 80% 70%, ${session.colors.secondary} 0%, transparent 40%)`;
 
         session.layers.forEach(layer => {
             const audio = new Audio(layer.url);
+            audio.crossOrigin = "anonymous";
             audio.loop = true;
             audio.volume = layer.initialVolume;
             audioElements.push({ audio, name: layer.name });
@@ -100,7 +114,12 @@ document.addEventListener('DOMContentLoaded', () => {
             audioElements.forEach(item => item.audio.pause());
             mainPlayBtn.innerText = 'Play All';
         } else {
-            audioElements.forEach(item => item.audio.play().catch(e => console.log('Audio Blocked')));
+            audioElements.forEach(item => {
+                const playPromise = item.audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => console.error("Audio blocked"));
+                }
+            });
             mainPlayBtn.innerText = 'Pause All';
         }
         isPlaying = !isPlaying;
@@ -113,11 +132,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // --- Event Listeners ---
     themeCards.forEach(card => {
-        card.addEventListener('click', () => {
-            startSession(card.dataset.theme);
-        });
+        card.addEventListener('click', () => startSession(card.dataset.theme));
     });
 
     customGenerateBtn.addEventListener('click', () => {
