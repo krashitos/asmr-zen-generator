@@ -43,7 +43,7 @@ class SessionResponse(BaseModel):
     layers: List[AudioLayer]
     colors: Dict[str, str]
 
-# Hotlinkable Wikimedia Commons URLs (Reliable for Vercel)
+# Reliable hotlinkable audio from Wikimedia Commons
 SOUND_LIBRARY = {
     "rain": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Rain_on_the_roof.mp3",
     "forest": "https://upload.wikimedia.org/wikipedia/commons/b/b0/Forest_ambience_with_birds.mp3",
@@ -52,11 +52,11 @@ SOUND_LIBRARY = {
     "white-noise": "https://upload.wikimedia.org/wikipedia/commons/e/e5/White_noise.ogg"
 }
 
-@app.get("/api/index")
+@app.get("/")
 async def hello():
     return {"message": "ASMR API is running"}
 
-@app.post("/api/index", response_model=SessionResponse)
+@app.post("/", response_model=SessionResponse)
 async def create_session(request: SessionRequest):
     prompt = f"""
     Create a Zen ASMR session configuration for the theme: "{request.theme}".
@@ -75,7 +75,7 @@ async def create_session(request: SessionRequest):
         response = model.generate_content(prompt)
         text = response.text.strip()
         
-        # Cleanup
+        # Cleanup markdown fences
         if text.startswith("```json"): text = text[7:]
         if text.endswith("```"): text = text[:-3]
         
@@ -99,7 +99,6 @@ async def create_session(request: SessionRequest):
         
     except Exception as e:
         logger.error(f"Error: {e}")
-        # Fallback
         return SessionResponse(
             title=f"Peaceful {request.theme}",
             script=f"Let the gentle sounds of {request.theme} wash over you. Deep breath in, slow release.",
