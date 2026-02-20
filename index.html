@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASMR Zen | Customizable Soundscapes</title>
+    <meta name="description" content="Immerse yourself in customizable ASMR audio experiences tailored by AI.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700;1,6..96,400&family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app" class="app-container">
+        <div class="dynamic-bg"></div>
+        
+        <header class="header">
+            <h1 class="logo">ASMR<span>Zen</span></h1>
+            <p class="tagline">Personalized Peace in a Digital World</p>
+        </header>
+
+        <main class="content">
+            <!-- Theme Selection Page -->
+            <section id="selectionPage" class="page active">
+                <div class="theme-grid">
+                    <div class="theme-card" data-theme="Rainy Night">
+                        <div class="card-overlay"></div>
+                        <span>🌧️ Rainy Night</span>
+                    </div>
+                    <div class="theme-card" data-theme="Deep Forest">
+                        <div class="card-overlay"></div>
+                        <span>🌲 Deep Forest</span>
+                    </div>
+                    <div class="theme-card" data-theme="Ocean Dreams">
+                        <div class="card-overlay"></div>
+                        <span>🌊 Ocean Dreams</span>
+                    </div>
+                    <div class="theme-card" data-theme="Coszy Fireplace">
+                        <div class="card-overlay"></div>
+                        <span>🔥 Cozy Fireplace</span>
+                    </div>
+                    <div class="theme-input-container">
+                        <input type="text" id="customTheme" placeholder="Or type your mood (e.g. library, cafe)...">
+                        <button id="customGenerateBtn">✨</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Player Page -->
+            <section id="playerPage" class="page hidden">
+                <div class="player-container glass">
+                    <button id="backBtn" class="back-btn">← Back</button>
+                    <h2 id="sessionTitle" class="session-title">Session Title</h2>
+                    <p id="sessionScript" class="session-script">Breathe in...</p>
+                    
+                    <div id="layersList" class="layers-list">
+                        <!-- Audio layers will be injected here -->
+                    </div>
+
+                    <div class="player-controls">
+                        <button id="mainPlayBtn" class="play-btn">Play All</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <div id="loadingOverlay" class="loading-overlay hidden">
+            <div class="zen-loader"></div>
+            <p>Curating your peace...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
